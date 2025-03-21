@@ -1,0 +1,48 @@
+- name: My First play
+  hosts: myhosts
+  vars:
+    - the_var: "{{3 + 3}}"
+    - user:
+      - name: Usch
+        age: 37
+      - name: Nicki
+        age: 36
+      - name: Eric
+        age: "{{lookup('fileglob', '*')}}"
+  tasks:
+    - name: Ping my hosts
+      ansible.builtin.ping:
+    
+    - name: Print message
+      ansible.builtin.debug:
+        msg: Hello world
+
+    - name: Write a file
+      ansible.builtin.template:
+        src: ./hello.j2
+        dest: /home/auschmann/hello.txt
+
+    - name: Print the var
+      ansible.builtin.debug:
+        msg: "Name: {{item.name}}, age: {{item.age}}"
+      loop: "{{user}}"
+
+
+
+    - name: Ab 18
+      ansible.builtin.debug:
+        msg: "Come in {{item}}"
+      loop:
+        - 18
+        - 30
+        - 40
+        - 12
+      when: item >= 18
+
+    - name: Get username
+      ansible.builtin.shell: whoami
+      register: username
+
+    - name: Print username
+      ansible.builtin.debug:
+        msg: "Username: {{username.stdout}}"
