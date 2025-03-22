@@ -1,48 +1,58 @@
-- name: My First play
+# https://www.digitalocean.com/community/tutorials/how-to-use-ansible-to-install-and-set-up-docker-on-ubuntu-20-04
+# 
+- name: Installs docker
   hosts: myhosts
-  vars:
-    - the_var: "{{3 + 3}}"
-    - user:
-      - name: Usch
-        age: 37
-      - name: Nicki
-        age: 36
-      - name: Eric
-        age: "{{lookup('fileglob', '*')}}"
+  become: true
   tasks:
-    - name: Ping my hosts
-      ansible.builtin.ping:
-    
-    - name: Print message
-      ansible.builtin.debug:
-        msg: Hello world
+    - name: Install aptitude
+      apt:
+        name: aptitude
+        state: latest
+        update_cache: true
 
-    - name: Write a file
-      ansible.builtin.template:
-        src: ./hello.j2
-        dest: /home/auschmann/hello.txt
+    - name: Install required system packages
+      apt:
+        pkg: 
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        state: latest
+        update_cache: true
 
-    - name: Print the var
-      ansible.builtin.debug:
-        msg: "Name: {{item.name}}, age: {{item.age}}"
-      loop: "{{user}}"
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
 
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
 
+    - name: Update apt and install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
 
-    - name: Ab 18
-      ansible.builtin.debug:
-        msg: "Come in {{item}}"
-      loop:
-        - 18
-        - 30
-        - 40
-        - 12
-      when: item >= 18
+    - name: Copy portainer docker compose file
+      ansible.builtin.copy:
+        src: ./docker-compose
+        dest: .
 
-    - name: Get username
-      ansible.builtin.shell: whoami
-      register: username
+    - name: Copy .env file
+      ansible.builtin.copy:
+        src: ./.env
+        dest: ./docker-compose/portainer/.env
 
-    - name: Print username
-      ansible.builtin.debug:
-        msg: "Username: {{username.stdout}}"
+    - name: Install portainer
+      community.docker.docker_compose_v2:
+        project_src: ./docker-compose/portainer
+
+    - name: Shutdown the machine
+      community.general.shutdown:
+      tags: ['never', 'shutdown']
