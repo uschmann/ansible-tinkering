@@ -3,65 +3,10 @@
 - name: Installs docker
   hosts: myhosts
   become: true
+  roles:
+    - role: docker
+    - role: portainer 
   tasks:
-    - name: Install aptitude
-      apt:
-        name: aptitude
-        state: latest
-        update_cache: true
-
-    - name: Install required system packages
-      apt:
-        pkg: 
-          - apt-transport-https
-          - ca-certificates
-          - curl
-          - software-properties-common
-          - python3-pip
-          - virtualenv
-          - python3-setuptools
-        state: latest
-        update_cache: true
-
-    - name: Add Docker GPG apt Key
-      apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
-
-    - name: Add Docker Repository
-      apt_repository:
-        repo: deb https://download.docker.com/linux/ubuntu focal stable
-        state: present
-
-    - name: Update apt and install docker-ce
-      apt:
-        name: docker-ce
-        state: latest
-        update_cache: true
-
-    - name: Copy portainer docker compose file
-      ansible.builtin.copy:
-        src: ./docker-compose
-        dest: .
-
-    - name: Copy .env file
-      ansible.builtin.copy:
-        src: ./.env
-        dest: "{{item}}"
-      loop:
-        - ./docker-compose/portainer/.env
-
-    - name: Install portainer
-      community.docker.docker_compose_v2:
-        project_src: ./docker-compose/portainer
-
-    - name: Remove .env files
-      ansible.builtin.file:
-        path: "{{item}}"
-        state: absent
-      loop:
-        - ./docker-compose/portainer/.env
-
     - name: Shutdown the machine
       community.general.shutdown:
       tags: ['never', 'shutdown']

@@ -1,0 +1,6 @@
+- name: Just testing
+  hosts: localhost
+  tasks:
+    - name: Print something
+      ansible.builtin.debug:
+        msg: "{{lookup('dotenv', 'PORTAINER_LICENSE_KEY')}}"
