@@ -5,7 +5,8 @@
   become: true
   roles:
     - role: docker
-    - role: portainer 
+    - role: portainer
+    - role: portainer-stack 
   tasks:
     - name: Shutdown the machine
       community.general.shutdown:
