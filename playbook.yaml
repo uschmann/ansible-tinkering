@@ -2,12 +2,14 @@
   hosts: myhosts
   become: true
   vars:
-    apps_dir: "/apps"
+    apps_dir: "/docker"
     cloudflare_api_key: "{{lookup('dotenv', 'CLOUDFLARE_API_KEY')}}"
   roles:
     - role: docker
+      tags: ['docker']
     - role: caddy
       tags: ['caddy']
+    - role: portainer
   tasks:
     - name: Shutdown the machine
       community.general.shutdown:

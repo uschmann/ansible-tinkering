@@ -5,3 +5,11 @@ usch.info {
         dns cloudflare {{cloudflare_api_key}}
      }
 }
+
+portainer.usch.info {
+    reverse_proxy portainer:9000
+
+    tls {
+        dns cloudflare {{cloudflare_api_key}}
+     }
+}
