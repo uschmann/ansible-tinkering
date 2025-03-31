@@ -2,6 +2,7 @@
   hosts: myhosts
   become: true
   vars:
+    apps_dir: "/apps"
     cloudflare_api_key: "{{lookup('dotenv', 'CLOUDFLARE_API_KEY')}}"
   roles:
     - role: docker

@@ -1,11 +1,11 @@
 - name: Create apps directory
   ansible.builtin.file:
-    path: /apps
+    path: "{{apps_dir}}"
     state: directory
 
 - name: Create caddy directory
   ansible.builtin.file:
-    path: /apps/caddy
+    path: "{{apps_dir}}/caddy"
     state: directory
 
 - name: Create a network
@@ -15,11 +15,11 @@
 - name: copy caddy docker-compose file
   ansible.builtin.template:
     src: "{{item}}"
-    dest: /apps/caddy/.
+    dest: "{{apps_dir}}/caddy/."
   with_fileglob: "{{role_path}}/templates/*"
   notify:
     - Restart caddy
 
 - name: Start caddy with docker-compose
   community.docker.docker_compose_v2:
-    project_src: /apps/caddy
+    project_src: "{{apps_dir}}/caddy"
