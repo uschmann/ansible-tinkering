@@ -8,7 +8,18 @@
     path: /apps/caddy
     state: directory
 
+- name: Create a network
+  ansible.builtin.docker_network:
+    name: proxy-network
+
 - name: copy caddy docker-compose file
   ansible.builtin.template:
-    src: docker-compose.yaml
-    dest: /apps/caddy/docker-compose.yaml
+    src: "{{item}}"
+    dest: /apps/caddy/.
+  with_fileglob: "{{role_path}}/templates/*"
+  notify:
+    - Restart caddy
+
+- name: Start caddy with docker-compose
+  community.docker.docker_compose_v2:
+    project_src: /apps/caddy

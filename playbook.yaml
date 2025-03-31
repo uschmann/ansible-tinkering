@@ -1,6 +1,8 @@
 - name: Installs docker
   hosts: myhosts
   become: true
+  vars:
+    cloudflare_api_key: "{{lookup('dotenv', 'CLOUDFLARE_API_KEY')}}"
   roles:
     - role: docker
     - role: caddy

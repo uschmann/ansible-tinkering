@@ -1,0 +1,7 @@
+usch.info {
+    respond "Hello, world!"
+
+    tls {
+        dns cloudflare {{cloudflare_api_key}}
+     }
+}
