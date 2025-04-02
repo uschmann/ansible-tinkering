@@ -1,22 +1,21 @@
-- name: Copy portainer docker compose file
-  ansible.builtin.copy:
-    src: ./docker-compose
-    dest: .
+- name: Create apps directory
+  ansible.builtin.file:
+    path: "{{apps_dir}}"
+    state: directory
 
-- name: Copy .env file
-  ansible.builtin.copy:
-    src: ./.env
-    dest: "{{item}}"
-  loop:
-    - ./docker-compose/portainer/.env
+- name: Create portainer directory
+  ansible.builtin.file:
+    path: "{{apps_dir}}/portainer"
+    state: directory
+
+- name: Copy portainer files
+  ansible.builtin.template:
+    src: "{{item}}"
+    dest: "{{apps_dir}}/portainer/."
+  with_fileglob: "{{role_path}}/templates/*"
+  notify:
+    - Restart portainer
 
 - name: Install portainer
   community.docker.docker_compose_v2:
-    project_src: ./docker-compose/portainer
-    
-- name: Remove .env files
-  ansible.builtin.file:
-    path: "{{item}}"
-    state: absent
-  loop:
-    - ./docker-compose/portainer/.env
+    project_src: "{{apps_dir}}/portainer"
