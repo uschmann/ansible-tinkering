@@ -10,6 +10,8 @@
     - role: caddy
       tags: ['caddy']
     - role: portainer
+    - role: authentik
+      tags: ['authentik']
   tasks:
     - name: Shutdown the machine
       community.general.shutdown:

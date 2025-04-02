@@ -13,3 +13,11 @@ portainer.usch.info {
         dns cloudflare {{cloudflare_api_key}}
      }
 }
+
+authentik.usch.info {
+    reverse_proxy authentik:9000
+
+    tls {
+        dns cloudflare {{cloudflare_api_key}}
+     }
+}
