@@ -12,6 +12,8 @@
     - role: portainer
     - role: authentik
       tags: ['authentik']
+    - role: bookstack
+      tags: ['bookstack']
   tasks:
     - name: Shutdown the machine
       community.general.shutdown:

@@ -21,3 +21,11 @@ authentik.usch.info {
         dns cloudflare {{cloudflare_api_key}}
      }
 }
+
+bookstack.usch.info {
+    reverse_proxy bookstack:80
+
+    tls {
+        dns cloudflare {{cloudflare_api_key}}
+     }
+}

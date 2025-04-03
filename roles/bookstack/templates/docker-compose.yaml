@@ -1,0 +1,44 @@
+networks:
+  proxy-network:
+    external: true
+
+services:
+  bookstack:
+    image: lscr.io/linuxserver/bookstack
+    container_name: bookstack
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - APP_URL=https://bookstack.usch.info
+      - DB_HOST=bookstack_db
+      - APP_KEY={{bookstack_app_key}}
+      - DB_PORT=3306
+      - DB_USERNAME=bookstack
+      - DB_PASSWORD={{bookstack_mysql_password}}
+      - DB_DATABASE=bookstack
+    volumes:
+      - data:/config
+    restart: unless-stopped
+    depends_on:
+      - bookstack_db
+    networks:
+      - default
+      - proxy-network
+  bookstack_db:
+    image: lscr.io/linuxserver/mariadb
+    container_name: bookstack_db
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - MYSQL_ROOT_PASSWORD={{bookstack_mysql_root_password}}
+      - TZ=Europe/Berlin
+      - MYSQL_DATABASE=bookstack
+      - MYSQL_USER=bookstack
+      - MYSQL_PASSWORD={{bookstack_mysql_password}}
+    volumes:
+      - db_data:/config
+    restart: unless-stopped
+
+volumes:
+  data:
+  db_data: 

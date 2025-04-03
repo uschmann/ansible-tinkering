@@ -1,0 +1,3 @@
+bookstack_mysql_root_password: "secret"
+bookstack_mysql_password: "secret"
+bookstack_app_key: "base64:rnGDdF36KVGSXaDNd8X/Xok9KCwiZ4degJmRGLaCiGg="

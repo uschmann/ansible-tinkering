@@ -1,0 +1,18 @@
+- name: Create bookstack directory
+  ansible.builtin.file:
+    path: "{{apps_dir}}/bookstack"
+    state: directory
+  
+- name: Copy bookstack files
+  ansible.builtin.template:
+    src: "{{item}}"
+    dest: "{{apps_dir}}/bookstack/."
+  with_fileglob: 
+    - "{{role_path}}/templates/*"
+    - "{{role_path}}/templates/.*"
+  notify:
+    - Restart bookstack
+
+- name: Start bookstack with docker-compose
+  community.docker.docker_compose_v2:
+    project_src: "{{apps_dir}}/bookstack"
